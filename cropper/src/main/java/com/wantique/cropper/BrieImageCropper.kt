@@ -74,11 +74,6 @@ class BrieImageCropper @JvmOverloads constructor(
         CoroutineScope(Dispatchers.IO).launch {
             this@BrieImageCropper.imageUri = imageUri
 
-            /*
-            * Exif Rotation 90 CW 이미지를 ImageDecoder.decodeBitmap() 메서드를 호출하면 정상적인 각도로 이미지가 제대로 보입니다.
-            * 동일한 이미지를 MediaStore.getBitmap() 메서드를 호출하면 Rotation 90 이 적용된 Image 가 로드됩니다.
-            * Exif Rotation 90 CW 는 Image 상단을 기준으로 왼쪽으로 90도 회전합니다.
-            * */
             val bitmap = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, imageUri))
             } else {
@@ -218,13 +213,6 @@ class BrieImageCropper @JvmOverloads constructor(
                 }
                 return true
             }
-
-            /*
-            MotionEvent.ACTION_UP -> {
-
-            }
-
-             */
         }
 
         return false
@@ -309,9 +297,6 @@ class BrieImageCropper @JvmOverloads constructor(
         invalidate()
     }
 
-    /*
-    * 이전 MotionEvent X,Y 축과의 Delta 값을 Cropper Rectangle 의 left, right, top, bottom 에 더해서  Cropper Rectangle 을 전체적으로 이동시킵니다.
-    * */
     private fun translateCropper(deltaX: Float, deltaY: Float) {
         mCropperRect.left += deltaX
         mCropperRect.right += deltaX
@@ -376,10 +361,6 @@ class BrieImageCropper @JvmOverloads constructor(
         coordinateCropperSize()
     }
 
-    /*
-    * Cropper Rectangle 의 각 좌표와 Image Rectangle 의 각 좌표의 차이를 구합니다.
-    * 각 좌표의 차이가 0보다 작거나 클 경우 Cropper Rectangle 이 Image Rectangle 의 크기보다 커진 것으로, 각 좌표에 각 좌표 차이의 반대 부호값을 더해 Cropper Rectangle 이 Image Cropper 보다 커지지 못하게 합니다.
-    * */
     private fun coordinateCropperSize() {
         val diffLeft = mCropperRect.left - mImageRect.left
         val diffRight = mCropperRect.right - mImageRect.right
@@ -443,31 +424,6 @@ class BrieImageCropper @JvmOverloads constructor(
             return Bitmap.createBitmap(drawableBitmap, cropper.left, cropper.top, cropper.width(), cropper.height(), null, true)
         }
         return null
-
-        /*
-        var bitmap: Bitmap? = null
-        context.contentResolver.openInputStream(imageUri)?.let {
-            val decoder = BitmapRegionDecoder.newInstance(it, false)
-            if(decoder != null) {
-                val bitmapWidth = decoder.width
-                val bitmapHeight = decoder.height
-
-                val rollbackScale = bitmapWidth / mImageRect.width()
-                val left = (bitmapWidth / (mImageRect.width() / mFrameRect.left) - mImageRect.left * rollbackScale).roundToInt()
-                val right = (bitmapWidth / (mImageRect.width() / mFrameRect.right) - mImageRect.left * rollbackScale).roundToInt()
-                val top = (bitmapHeight / (mImageRect.height() / mFrameRect.top) - mImageRect.top * rollbackScale).roundToInt()
-                val bottom = (bitmapHeight / (mImageRect.height() / mFrameRect.bottom) - mImageRect.top * rollbackScale).roundToInt()
-                val cropper = Rect(left, top, right, bottom)
-
-                bitmap = decoder.decodeRegion(cropper, BitmapFactory.Options())
-            }
-
-            it.close()
-        }
-
-        return bitmap
-
-         */
 
     }
 
