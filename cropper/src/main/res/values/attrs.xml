@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BrieImageCropper">
+        <attr format="dimension" name="minimum_cropper_size"/>
+    </declare-styleable>
+</resources>
